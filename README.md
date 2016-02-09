@@ -1,2 +1,2 @@
 # PracticePrograms
-Contains programs for various problems
+Contains programming solutions for various problems
