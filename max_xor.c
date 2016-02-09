@@ -8,15 +8,17 @@ typedef struct subset_res {
     int xor;
     struct current_request {
        int *max_index;
+       int *curr_index;
+       int *subset;
     }curr_req;
 
 }ss_result;
 
-void gen_max_subset_xor(int *array, int n, int N, ss_result *resPtr, int st_idx);
+void gen_max_subset_xor(int *array, int n, int N, ss_result *resPtr, int a_idx, int ss_idx);
 
 int main()
 {
-    int array[] = {1, 2, 3, 4, 5};
+    int array[] = {1, 2, 3, 4, 7, 5, 6};
     int N = (sizeof(array)/sizeof(array[0]));
     int i, j, k;
     ss_result res = {0};
@@ -35,13 +37,23 @@ int main()
         res.curr_req.max_index = (int *)malloc(sizeof(int)*i);
         if(res.curr_req.max_index == NULL)
             return 0;
+        res.curr_req.curr_index = (int *)malloc(sizeof(int)*i);
+        if(res.curr_req.curr_index == NULL)
+            return 0;
+        res.curr_req.subset = (int *)malloc(sizeof(int)*i);
+        if(res.curr_req.subset == NULL)
+            return 0;
         memset(res.curr_req.max_index, 0 , sizeof(int)*i);
+        memset(res.curr_req.curr_index, 0 , sizeof(int)*i);
+        memset(res.curr_req.subset, 0 , sizeof(int)*i);
         for(j = (N-1), k = (i-1); (j >= 0) && (k >= 0); --j, --k)
         {
             res.curr_req.max_index[k] = j;
         }
-        gen_max_subset_xor(array, i, N, &res, 0);
+        gen_max_subset_xor(array, i, N, &res, 0, 0);
         free(res.curr_req.max_index);
+        free(res.curr_req.curr_index);
+        free(res.curr_req.subset);
     }
 
     printf("subset with max xor %d is {", res.xor);
@@ -57,63 +69,60 @@ int main()
     return 0;
 }
 
-void gen_max_subset_xor(int *array, int n, int N, ss_result *resPtr, int st_idx)
+void gen_max_subset_xor(int *array, int n, int N, ss_result *resPtr, int a_idx, int ss_idx)
 {
-    int subset[n];
-    int curr_index[n];
-    int i, p, xor = 0, count = 0;
+    int i, p, xor = 0;
     
     if(resPtr == NULL)
         exit(-1);
 
-    memset(subset, 0, sizeof(subset));
-    memcpy(curr_index, subset, sizeof(subset));
-    for(i = st_idx, p = 0; (i < N) && (p < n); ++i, ++p)
+    for(i = a_idx, p = ss_idx; (i < N) && (p < n); ++i, ++p)
     {
-        subset[p] = array[i];
-        curr_index[p] = i;
-        ++count;
+        resPtr->curr_req.subset[p] = array[i];
+        resPtr->curr_req.curr_index[p] = i;
     }
-
-    if(count < n)
-      return;
-
     for(i = 0; i < n; ++i)
     {
-        xor ^= subset[i];
-        printf("%d ", subset[i]);
+        xor ^= resPtr->curr_req.subset[i];
+        printf("%d ", resPtr->curr_req.subset[i]);
     }
     printf("\n");
 
     if(resPtr->xor < xor)
     {
-        memcpy((char *)resPtr->arrayPtr, (char *)subset, (sizeof(int)*n));
+        memcpy((char *)resPtr->arrayPtr, (char *)resPtr->curr_req.subset, (sizeof(int)*n));
         resPtr->xor = xor;
         resPtr->num = n;
     }
 
-    for(i = (n-1); i > 0; --i)
+    while(resPtr->curr_req.curr_index[n-1] < resPtr->curr_req.max_index[n-1])
     {
-        while(curr_index[i] < resPtr->curr_req.max_index[i])
+        resPtr->curr_req.subset[n-1] = array[++(resPtr->curr_req.curr_index[n-1])];
+        xor = 0;
+        for(i = 0; i < n; ++i)
         {
-            int j;
-            subset[i] = array[++curr_index[i]];
-            xor = 0;
-            for(j = 0; j < n; ++j)
-            {
-                xor ^= subset[j];
-                printf("%d ", subset[j]);
-            }
-            printf("\n");
-            if(resPtr->xor < xor)
-            {
-                memcpy((char *)resPtr->arrayPtr, (char *)subset, (sizeof(int)*n));
-                resPtr->xor = xor;
-                resPtr->num = n;
-            }
+            xor ^= resPtr->curr_req.subset[i];
+            printf("%d ", resPtr->curr_req.subset[i]);
+        }
+        printf("\n");
+        if(resPtr->xor < xor)
+        {
+            memcpy((char *)resPtr->arrayPtr, (char *)resPtr->curr_req.subset, (sizeof(int)*n));
+            resPtr->xor = xor;
+            resPtr->num = n;
         }
     }
-
-    if((i == 0) && (curr_index[0] < resPtr->curr_req.max_index[0]))
-        gen_max_subset_xor(array, n, N, resPtr, curr_index[0]+1);
+    for(i = 0; i < n; ++i)
+    {
+        if(resPtr->curr_req.curr_index[i] < resPtr->curr_req.max_index[i])
+        {
+            continue;
+        }
+        else
+            break;
+    }
+    if((i < n) && (i > 0))
+    {
+        gen_max_subset_xor(array, n, N, resPtr, ++(resPtr->curr_req.curr_index[i-1]), (i-1));
+    }
 }
