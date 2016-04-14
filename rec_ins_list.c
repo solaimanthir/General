@@ -45,6 +45,49 @@ void print_list(list * head)
    }
    printf("\n");
 }
+
+ struct node * group_odd_even_nodes(struct node * head)
+ {
+     bool is_odd = true;
+     struct node * oddGrp_list = NULL, * evenGrp_list = NULL, *traverse;
+     struct node * odd_head, * even_head;
+     
+     if(head == NULL) {
+         return NULL;
+     }
+     
+     for(traverse = head; traverse != NULL; traverse = traverse->next)
+     {
+         if(is_odd) {
+             if(oddGrp_list == NULL) {
+                 oddGrp_list = traverse;
+                 odd_head = traverse; 
+             }
+             else {
+                 oddGrp_list->next = traverse;
+                 oddGrp_list = traverse;
+             }
+         }
+         else {
+             if(evenGrp_list == NULL) {
+                 evenGrp_list = traverse;
+                 even_head = traverse;
+             }
+             else {
+                 evenGrp_list->next = traverse;
+                 evenGrp_list = traverse;
+             }
+         }
+         is_odd = (!is_odd);
+     }
+     
+     oddGrp_list->next = even_head;
+     if(evenGrp_list)
+        evenGrp_list->next = NULL;
+     
+     return odd_head;
+ }
+ 
 int main()
 {
     list * head  = NULL;
@@ -55,6 +98,8 @@ int main()
     rec_ins_wrap(&head, 14, 4); /*TC5: Insert 2nd pos from End*/
     rec_ins_wrap(&head, 15, 3); /*TC6: Insert at random location->3*/
     rec_ins_wrap(&head, 16, 8); /*TC7: Negative test case: position 8 exceeds max insert position 7*/
+    print_list(head);
+    head = group_odd_even_nodes(head);
     print_list(head);
     return 0;
 }
