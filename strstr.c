@@ -35,7 +35,7 @@ char * strstr1(const char *str, const char *substr)
 }
 int main()
 {
-	if(strstr1("sol", ""))
+	if(strstr1("solz", ""))
 		printf("Match found\n");
 	else
 		printf("Not found\n");
