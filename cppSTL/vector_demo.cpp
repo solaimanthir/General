@@ -1,3 +1,16 @@
+/*
+    They are dynamic arrays with the capability to adjust itself automatically whenever elements are inserted or deleted.
+    Its elements are stored contiguously; So, elements can be accessed using iterators.
+    Inserting elements at the front or in the middle takes linear time.
+    Removing last element takes constant time because resizing of vector is not needed.
+    Time-complexity associated with vectors are:
+        To insert or remove data at the end - O(1), constant time.
+        To insert or remove data at other positions - O(N), Linear time.
+        Resizing of the vector - O(N), Linear time.
+        Read the current size - O(1), constant time.
+        Arbitrary access - O(1), constant time.
+*/
+
 #include <iostream>
 #include <vector>
 
