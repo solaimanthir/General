@@ -1,0 +1,77 @@
+Linux system programming - Fundamental concepts
+
+A brief description about each of the concepts are provided.
+
+Kernel:
+	* It is a key software that manages and allocates the computer resources such as CPU, memory, devices etc.
+	* Jobs done by kernel are: Memory management, Process scheduling, Process management, filesystem management, networking, administration of devices, system call API facilities, and so on.
+
+Shell
+	* A shell is a command interpreter to read commands and execute relevant programs.
+	* Different shells are available: Bourne shell(sh), C shell (csh), Korn shell (ksh), Bourne again shell (bash).
+
+File I/O
+	* I/O on all types of files including special files can be done by using same system calls such as read(), write(), open(), close(), and so on.
+	* A file descriptor is a non-negative integer which can be used for I/O on open files. This file descriptor is obtained usually through system call open().
+	* C's standard stdio library includes set of functions that can be used to perform file I/O.
+
+Users
+	* Every user in the system has a username and a user ID. Both these data and user's group ID, login shell info, home directory info are available in /etc/passwd file.
+
+Superuser
+	* This user has special privileges in the system and has user ID 0.   
+
+Groups
+	* Users can be part of one or more groups. 
+	* The file /etc/group contains info such as group name, group ID, and user list for each group.
+
+Directories
+	* Organisation of all files in the system is achieved by a single hierarchical directory layout starting with the root directory.
+	* Directories may have files and sub-directories. Except the root directory, every directory has a parent directory.
+	* A process inherits its working directory from its parent process.
+
+Files
+	* Some of the common file types are: regular or plain(or ordinary) files, sockets, pipes, devices, symbolic links, and directories.
+	* An absolute pathname mentions a file location with respect to the root directory.
+	* A relative pathname mentions a file location relative to a process's current working directory.
+	* Nine permission bits with three each for owner, group, and other explain file permissions that are allowed for the user categories.
+	* Every file has an associated user ID and group ID that describes the file's owner and group.
+
+Symbolic links
+	* It is a type of file that points to another file or a directory in the system. It is similar to a shortcut in Windows.
+	* A symbolic link is said to be a dangling link if it refers to a file that doesn't exist.
+
+
+Processes
+	* A process is a running instance of a program.
+	* When a program is executed, kernel loads the program's code into virtual memory, allocates resources, and establishes kernel datastructures to manage the process's information.
+	* A process can create new process by means of fork() system call. Caller of the fork() is called parent process and newly created process is said to be child process.
+	* A process can be logically divided into four segments. They are: Data(program's static variables), Text(program's code), Heap(dynamic allocation of memory), and Stack(memory for function's local variables, function calls). 
+	* The child process can use execve() system call to load and run a new pogram. It inherits the copies of parent's stack, data, and heap segments. Text segment(which is read-only) is shared between the processes.
+	* Each process has a process id and a parent process id.
+	* Each process has associated user ids and group ids. Real user ID and real group ID identify the user and group to which a process belongs. Effective user ID and effective group ID are typically same as real IDs but usually changed to give them privileged access to resources. Supplementary group IDs describe additional groups to which a process belongs.
+	* A privileged process is a process which has effective user id of 0.
+	* A daemon process runs in background and runs until the system shuts down. Example for this is syslogd, httpd, ftpd, sshd, and so on.
+	* init process which has PID 1 is parent of all processes. It can't be killed and runs with superuser(root) privileges.
+
+Threads
+	* Each process can have multiple threads. Threads in a process share data, heap, and text area of the program. Each thread is allocated its own stack for its local variables and function calls.
+
+/proc File System
+	* /proc File System in Linux is a virtual file system. It provides access to kernel datastructures in a format that resembles files and directories on a file system. For example, a file like /proc/PID (where PID is process id) can be used to know the information about processes running in the system.
+
+IPC
+	* Different techniques for interprocess communication are: pipes, FIFOs, signals, sockets, shared memory, semaphores, message queues, file locking.
+
+Signals
+	* Signals are used to inform a process that an event has occured.
+	* A signal handler is a function to perform some action on the basis of signal.
+
+Static libraries
+	* It is a collection of compiled object modules. The linker takes copies of needed object modules from library and includes them into executable file.
+	* Objects are statically linked with executables during compilation.
+	* Each process will have their own copy of object modules. It means that object modules are not shared between the processes.
+
+Shared libraries
+	* Unlike static library, there can only be one copy of shared library in memory for the dependent executables.
+	* The dynamic linker makes sure that shared libraries needed by the executable are loaded into memory whenever executable is loaded into memory at run-time. And, linker makes sure that functions needed by executable are linked during run-time from function definitions in shared library.
