@@ -1,0 +1,117 @@
+/*Author: Solai*/
+
+What is a Callback function?
+
+          A function that is passed as an argument to another function(or piece of code) through which it is expected that callback function gets called as part of a certain event. Callbacks are most commonly used in event-driven systems.
+
+Callbacks in C are implemented using function pointers. Similar to a pointer pointing at an address of a variable, a function pointer is a pointer that points to an address of a function. During the execution of a program, a function pointer can be dynamically set to point to different functions.
+
+Given below are the example programs implementing callbacks.
+
+Example1
+
+#include<stdio.h>
+
+//define a type for the function pointer
+typedef int (*callback_t)(int num);
+
+int cb_sum(int num)
+{
+    return (num+num);
+}
+
+int cb_square(int num)
+{
+    return (num*num);
+}
+
+int cb_cube(int num)
+{
+    return (num*num*num);
+}
+
+int calculate_res(int num, callback_t funcP)
+{
+    return funcP(num);
+}
+int main()
+{
+    int i = 0;
+    int num = 10;
+    int result = 0;
+    int cb_table_size = 0;
+
+    /*Callback registration: Assigned the callback function
+    'cb_sum' to the function pointer 'funcp'*/
+    callback_t funcP = cb_sum;
+    /*Callbacks registration with array*/
+    callback_t funcP_table[] = {
+        cb_square,
+        cb_cube,
+    };
+    cb_table_size = sizeof(funcP_table)/sizeof(funcP_table[0]);
+
+    /*passing the function pointer as an argument to the function*/
+    result = calculate_res(num, funcP);
+    printf("result: %d\n", result);
+
+    for(i = 0; i < cb_table_size; ++i)
+    {
+        result = calculate_res(num, funcP_table[i]);
+        printf("result: %d\n", result);
+    }
+
+    return 0;
+}
+
+Example2
+
+We will look into another example in which a C library function makes use of user-supplied callback function.
+
+void qsort (void* arrayPtr, size_t num, size_t size, 
+    int (*compare)(const void*,const void*));
+C library function qsort()'s fourth parameter accepts user-defined callback function in the form of function pointer. 
+This callback function shall be used by the qsort library function to compare and sort the objects.
+
+/*Code*/
+#include <stdio.h>
+#include <stdlib.h>
+
+/*comparison function to sort elements in ascending order*/
+int cb_compare(const void* p, const void* q)
+{
+    int num1 = *(int *)p;
+    int num2 = *(int *)q;
+
+    /*return value determines how elements are sorted.
+    If return value < 0, num1 goes before num2.
+    If return value > 0, num1 goes after num2.
+    If return value is 0, num1 placed next to num2*/
+    return num1 - num2;
+}
+
+int main ()
+{
+    int i;
+    int arr[] = {20, 1, 88, 37, 74, 854};
+    int arr_len = sizeof(arr)/sizeof(arr[0]);
+    int arr_ele_len = sizeof(arr[0]);
+
+    printf("Before quick sort\n");
+    for (i = 0; i < arr_len; ++i)
+    {
+        printf ("%d ", arr[i]);
+    }
+    printf("\n");
+  
+    qsort (arr, arr_len, arr_ele_len, cb_compare);
+  
+    printf("After quick sort\n");
+    for (i = 0; i < arr_len; ++i)
+    {
+       printf ("%d ", arr[i]);
+    }
+    printf("\n");
+  
+    return 0;
+}
