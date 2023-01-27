@@ -1,2 +1,2 @@
-# PracticePrograms
-Contains programming solutions for various problems
+# General
+Code, theory, general ideas
