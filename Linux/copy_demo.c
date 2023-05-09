@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
     if(argc != 3 || (strcmp(argv[1], "--help") == 0))
     {
-        printf("%s src-file dest-file\n", argv[0]);
+        printf("Usage: %s src-file dest-file\n", argv[0]);
         exit(0);
     }
 
