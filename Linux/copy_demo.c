@@ -20,12 +20,14 @@ int main(int argc, char *argv[])
     if(argc != 3 || (strcmp(argv[1], "--help") == 0))
     {
         printf("%s src-file dest-file\n", argv[0]);
+        exit(0);
     }
 
     infd = open(argv[1], O_RDONLY);
     if(-1 == infd)
     {
         printf("error in opening source file %s\n", argv[1]);
+        exit(EXIT_FAILURE);
     }
 
     outfd = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC,
@@ -33,6 +35,7 @@ int main(int argc, char *argv[])
     if(-1 == outfd)
     {
         printf("error in opening destination file %s\n", argv[2]);
+        exit(EXIT_FAILURE);
     }
 
     /*read and write data*/
@@ -52,7 +55,10 @@ int main(int argc, char *argv[])
 
         wcount = write(outfd, buffer, rcount);
         if(wcount != rcount)
+        {
             printf("write error\n");
+            exit(EXIT_FAILURE);
+        }
     }
 
     ret = close(infd);
